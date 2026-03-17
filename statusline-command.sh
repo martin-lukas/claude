@@ -6,6 +6,10 @@ input=$(cat)
 project_dir=$(echo "$input" | jq -r '.workspace.project_dir // .cwd // ""')
 model=$(echo "$input" | jq -r '.model.display_name // ""')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+effort=$(echo "$input" | jq -r '.effortLevel // empty')
+if [ -z "$effort" ]; then
+  effort=$(jq -r '.effortLevel // empty' ~/.claude/settings.json 2>/dev/null)
+fi
 
 # Project folder name (basename only)
 folder=$(basename "$project_dir")
@@ -46,7 +50,11 @@ if [ -n "$git_branch" ]; then
 fi
 
 if [ -n "$model" ]; then
-  parts="$parts | $model"
+  if [ -n "$effort" ]; then
+    parts="$parts | $model ($effort)"
+  else
+    parts="$parts | $model"
+  fi
 fi
 
 parts="$parts | $context_str"
