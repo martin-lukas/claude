@@ -73,19 +73,9 @@ fmt_duration() {
   fi
 }
 
-# ── Context bar (row 1 left cell) ─────────────────────────────────────────────
-if [ -n "$used_pct" ]; then
-  ctx_int=$(printf "%.0f" "$used_pct")
-else
-  ctx_int=0
-fi
-ctx_bar=$(make_bar $ctx_int)
-ctx_color=$(pct_color $ctx_int)
-ctx_pct=$(printf "%3d%%" $ctx_int)
-ctx_plain="${ctx_pct}[${ctx_bar}] "
-ctx_colored="${GRAY}${ctx_pct}${RESET}${ctx_color}[${ctx_bar}]${RESET} "
+SEP="${GRAY}✖${RESET}"
 
-# ── Model/effort (row 1 right cell) ───────────────────────────────────────────
+# ── Model/effort ───────────────────────────────────────────────────────────────
 model_lower=$(echo "$model" | tr '[:upper:]' '[:lower:]')
 if echo "$model_lower" | grep -q "haiku";  then model_color="$GREEN"
 elif echo "$model_lower" | grep -q "sonnet"; then model_color="$ORANGE"
@@ -100,16 +90,23 @@ case "$effort" in
 esac
 
 if [ -n "$model" ] && [ -n "$effort" ]; then
-  mdl_plain=" ${model} (${effort}) "
-  mdl_colored=" ${model_color}${model}${RESET} (${effort_color}${effort}${RESET}) "
+  mdl_part="${model_color}${model}${RESET} (${effort_color}${effort}${RESET})"
 elif [ -n "$model" ]; then
-  mdl_plain=" ${model} "
-  mdl_colored=" ${model_color}${model}${RESET} "
+  mdl_part="${model_color}${model}${RESET}"
 else
-  mdl_plain="  "; mdl_colored="  "
+  mdl_part=""
 fi
 
-# ── 5h rate limit (row 2 left cell) ───────────────────────────────────────────
+# ── Context percentage ─────────────────────────────────────────────────────────
+if [ -n "$used_pct" ]; then
+  ctx_int=$(printf "%.0f" "$used_pct")
+else
+  ctx_int=0
+fi
+ctx_color=$(pct_color $ctx_int)
+ctx_part="${ctx_color}${ctx_int}%${RESET}"
+
+# ── 5h rate limit ──────────────────────────────────────────────────────────────
 now=$(date +%s)
 if [ -n "$five_hr_pct" ]; then
   fh_int=$(printf "%.0f" "$five_hr_pct")
@@ -121,14 +118,12 @@ if [ -n "$five_hr_pct" ]; then
   else
     fh_time_str=""
   fi
-  fh_plain=" 5h ${fh_bar}${fh_time_str} "
-  fh_colored=" ${GRAY}5h${RESET} ${fh_color}${fh_bar}${RESET}${GRAY}${fh_time_str}${RESET} "
+  fh_part="${GRAY}5h${RESET} ${fh_color}${fh_bar}${RESET}${GRAY}${fh_time_str}${RESET}"
 else
-  fh_plain=" 5h — "
-  fh_colored=" ${GRAY}5h —${RESET} "
+  fh_part="${GRAY}5h —${RESET}"
 fi
 
-# ── 7d rate limit (row 2 right cell) ──────────────────────────────────────────
+# ── 7d rate limit ──────────────────────────────────────────────────────────────
 if [ -n "$seven_day_pct" ]; then
   sd_int=$(printf "%.0f" "$seven_day_pct")
   sd_bar=$(make_bar $sd_int dot)
@@ -139,46 +134,10 @@ if [ -n "$seven_day_pct" ]; then
   else
     sd_time_str=""
   fi
-  sd_plain=" 7d ${sd_bar}${sd_time_str} "
-  sd_colored=" ${GRAY}7d${RESET} ${sd_color}${sd_bar}${RESET}${GRAY}${sd_time_str}${RESET} "
+  sd_part="${GRAY}7d${RESET} ${sd_color}${sd_bar}${RESET}${GRAY}${sd_time_str}${RESET}"
 else
-  sd_plain=" 7d — "
-  sd_colored=" ${GRAY}7d —${RESET} "
+  sd_part="${GRAY}7d —${RESET}"
 fi
-
-# ── Table layout ──────────────────────────────────────────────────────────────
-repeat_char() { printf "%${2}s" | tr ' ' "$1"; }
-
-# Column widths = max of both rows
-lw1=${#mdl_plain}; lw2=${#fh_plain}
-rw1=${#ctx_plain}; rw2=${#sd_plain}
-lw=$(( lw1 > lw2 ? lw1 : lw2 ))
-rw=$(( rw1 > rw2 ? rw1 : rw2 ))
-
-# Pad plain widths with trailing spaces so columns align
-pad_right() { local s="$1" w=$2; printf "%-${w}s" "$s"; }
-
-ctx_plain_padded=$(pad_right "$ctx_plain" $lw)
-fh_plain_padded=$(pad_right  "$fh_plain"  $lw)
-mdl_plain_padded=$(pad_right "$mdl_plain" $rw)
-sd_plain_padded=$(pad_right  "$sd_plain"  $rw)
-
-# For colored cells, append spaces to match target width
-mdl_pad=$(( lw - ${#mdl_plain} ))
-fh_pad=$(( lw - ${#fh_plain} ))
-ctx_pad=$(( rw - ${#ctx_plain} ))
-sd_pad=$(( rw - ${#sd_plain} ))
-
-mdl_cell="${mdl_colored}$(repeat_char ' ' $mdl_pad)"
-fh_cell="${fh_colored}$(repeat_char ' '  $fh_pad)"
-ctx_cell="${ctx_colored}$(repeat_char ' ' $ctx_pad)"
-sd_cell="${sd_colored}$(repeat_char ' '  $sd_pad)"
-
-top="${BLUE}┌$(repeat_char '─' $lw)┬$(repeat_char '─' $rw)┐${RESET}"
-div="${BLUE}├$(repeat_char '─' $lw)┼$(repeat_char '─' $rw)┤${RESET}"
-bot="${BLUE}└$(repeat_char '─' $lw)┴$(repeat_char '─' $rw)┘${RESET}"
-row1="${BLUE}│${RESET}${mdl_cell}${BLUE}│${RESET}${ctx_cell}${BLUE}│${RESET}"
-row2="${BLUE}│${RESET}${fh_cell}${BLUE}│${RESET}${sd_cell}${BLUE}│${RESET}"
 
 # ── Line 1: user@hostname:path (branch) ───────────────────────────────────────
 line1="${GREEN}${user}@${hostname}${RESET}:${BLUE}${display_path}${RESET}"
@@ -186,4 +145,5 @@ if [ -n "$git_branch" ]; then
   line1="${line1} ${YELLOW}(${git_branch})${RESET}"
 fi
 
-printf "%s\n%s\n%s\n%s\n%s\n%s\n" "$line1" "$top" "$row1" "$div" "$row2" "$bot"
+# ── Line 2: single line statusline ────────────────────────────────────────────
+printf "%s\n%s %s %s %s %s %s %s\n" "$line1" "$mdl_part" "$SEP" "$ctx_part" "$SEP" "$fh_part" "$SEP" "$sd_part"
