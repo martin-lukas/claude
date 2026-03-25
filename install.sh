@@ -18,6 +18,7 @@ link() {
   echo "Linked $dst → $src"
 }
 
+link "CLAUDE.md"
 link "settings.json"
 link "statusline-command.sh"
 # link "commands"  # uncomment when a commands/ dir is added to this repo

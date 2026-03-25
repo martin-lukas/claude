@@ -1,5 +1,8 @@
-# Claude Code Instructions
+# Global Claude instructions
 
-## Git Commits
-- Never commit without the user explicitly requesting it (e.g., saying "commit").
-- Never add `Co-Authored-By` lines to commit messages.
+## Editing files
+- Never rewrite or overwrite a file if the result would be identical to the original — skip it silently instead of prompting for confirmation on a no-op change.
+
+## Git
+- Do not commit or push unprompted — wait for the user to ask.
+- Do not append `Co-Authored-By` or any other signature to commit messages.
