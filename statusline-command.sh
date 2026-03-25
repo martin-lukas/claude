@@ -11,37 +11,46 @@ if [ -z "$effort" ]; then
   effort=$(jq -r '.effortLevel // empty' ~/.claude/settings.json 2>/dev/null)
 fi
 
-# Project folder name (basename only)
-folder=$(basename "$project_dir")
+# user@hostname:~/path format
+user=$(whoami)
+hostname=$(hostname -s)
+display_path="${project_dir/#$HOME/~}"
 
 # Git branch (skip optional locks to avoid blocking)
 git_branch=$(git -C "$project_dir" --no-optional-locks branch --show-current 2>/dev/null)
 
-# ANSI color codes
-BLUE="\033[34m"
-GREEN="\033[32m"
-YELLOW="\033[33m"
-RED="\033[31m"
-PINK="\033[38;5;213m"
-GRAY="\033[38;5;245m"
-ORANGE="\033[38;5;208m"
-RESET="\033[0m"
+# ANSI color codes (real escape bytes via $'...' syntax)
+BLUE=$'\033[34m'
+GREEN=$'\033[32m'
+YELLOW=$'\033[33m'
+RED=$'\033[31m'
+ORANGE=$'\033[38;5;208m'
+PURPLE=$'\033[35m'
+GRAY=$'\033[38;5;245m'
+RESET=$'\033[0m'
 
-# Context window usage with color thresholds
+# Context bar
 if [ -n "$used_pct" ]; then
   used_int=$(printf "%.0f" "$used_pct")
-  if [ "$used_int" -ge 90 ]; then
-    context_str=$(printf "${RED}${used_int}%% ctx${RESET}")
-  elif [ "$used_int" -ge 70 ]; then
-    context_str=$(printf "${YELLOW}${used_int}%% ctx${RESET}")
-  else
-    context_str=$(printf "${GREEN}${used_int}%% ctx${RESET}")
-  fi
 else
-  context_str=$(printf "${GREEN}0%% ctx${RESET}")
+  used_int=0
 fi
 
-# Model color: haiku=pink, sonnet=gray, opus=orange
+if [ "$used_int" -ge 90 ]; then
+  bar_color="$RED"
+elif [ "$used_int" -ge 70 ]; then
+  bar_color="$YELLOW"
+else
+  bar_color="$GREEN"
+fi
+
+filled=$(( used_int / 10 ))
+empty=$(( 10 - filled ))
+bar=""
+for i in $(seq 1 $filled); do bar="${bar}█"; done
+for i in $(seq 1 $empty); do bar="${bar}░"; done
+
+# Model color
 model_lower=$(echo "$model" | tr '[:upper:]' '[:lower:]')
 if echo "$model_lower" | grep -q "haiku"; then
   model_color="$GREEN"
@@ -53,7 +62,7 @@ else
   model_color="$RESET"
 fi
 
-# Effort color: low=green, medium=orange, high=red
+# Effort color
 case "$effort" in
   low)    effort_color="$GREEN" ;;
   medium) effort_color="$ORANGE" ;;
@@ -61,27 +70,34 @@ case "$effort" in
   *)      effort_color="$RESET" ;;
 esac
 
-# Build status line parts
-parts=""
-
-if [ -n "$folder" ]; then
-  parts="📁 $(printf "${BLUE}${folder}${RESET}")"
-fi
-
+# Line 1: user@hostname:path (branch)
+line1="${GREEN}${user}@${hostname}${RESET}:${BLUE}${display_path}${RESET}"
 if [ -n "$git_branch" ]; then
-  parts="$parts [$git_branch]"
+  line1="${line1} ${YELLOW}(${git_branch})${RESET}"
 fi
 
-if [ -n "$model" ]; then
-  model_str=$(printf "${model_color}${model}${RESET}")
-  if [ -n "$effort" ]; then
-    effort_str=$(printf "${effort_color}${effort}${RESET}")
-    parts="$parts | $model_str ($effort_str)"
-  else
-    parts="$parts | $model_str"
-  fi
+# Table cell plain text (for width) and colored text
+left_plain=" [${bar}] ${used_int}% "
+left_colored=" ${bar_color}[${bar}]${RESET} ${GRAY}${used_int}%${RESET} "
+
+if [ -n "$model" ] && [ -n "$effort" ]; then
+  right_plain=" ${model} (${effort}) "
+  right_colored=" ${model_color}${model}${RESET} (${effort_color}${effort}${RESET}) "
+elif [ -n "$model" ]; then
+  right_plain=" ${model} "
+  right_colored=" ${model_color}${model}${RESET} "
+else
+  right_plain="  "
+  right_colored="  "
 fi
 
-parts="$parts | $context_str"
+lw=${#left_plain}
+rw=${#right_plain}
 
-printf "%b" "$parts"
+repeat_char() { printf "%${2}s" | tr ' ' "$1"; }
+
+top="${BLUE}┌$(repeat_char '─' $lw)┬$(repeat_char '─' $rw)┐${RESET}"
+mid="${BLUE}│${RESET}${left_colored}${BLUE}│${RESET}${right_colored}${BLUE}│${RESET}"
+bot="${BLUE}└$(repeat_char '─' $lw)┴$(repeat_char '─' $rw)┘${RESET}"
+
+printf "%s\n%s\n%s\n%s\n" "$line1" "$top" "$mid" "$bot"
