@@ -69,7 +69,7 @@ make_ctx_bar() {
   local filled=$(( pct / 10 ))
   local empty=$(( 10 - filled ))
   local b=""
-  for i in $(seq 1 $filled); do b="${b}${BLUE}█"; done
+  for i in $(seq 1 $filled); do b="${b}${color}█"; done
   for i in $(seq 1 $empty); do b="${b}${GRAY}░"; done
   echo "$b"
 }
