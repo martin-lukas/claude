@@ -1,16 +1,30 @@
 {
   "permissions": {
-    "defaultMode": "plan"
+    "allow": [
+      "Bash(date:*)",
+      "Bash(echo:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(sort:*)",
+      "Bash(grep:*)",
+      "Bash(tr:*)",
+      "Bash(git add:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)"
+    ]
   },
   "statusLine": {
     "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
+    "command": "bash ~/.claude/status_line.sh"
   },
   "enabledPlugins": {
     "explanatory-output-style@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
     "jdtls-lsp@claude-plugins-official": true,
-    "rust-analyzer-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true
   },
   "spinnerTipsEnabled": false,
