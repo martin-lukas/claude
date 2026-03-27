@@ -21,4 +21,4 @@ link() {
 link "CLAUDE.md"
 link "settings.json"
 link "status_line.sh"
-# link "commands"  # uncomment when a commands/ dir is added to this repo
+link "commands"
