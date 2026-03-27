@@ -31,6 +31,13 @@ conventions (code style, naming, formatting, commit message format, project
 structure rules). Follow those in addition to these global instructions, with
 project-level rules taking precedence where they conflict.
 
+## Plans
+
+Never write plans to `~/.claude/plans/`. Always store plans, tasks, and session
+state in the project's `.planning/` directory (STATE.md, ROADMAP.md, etc.).
+If a task list or implementation plan needs to be captured, add it to ROADMAP.md
+or STATE.md — do not create a separate file outside the project.
+
 ## Templates
 
 Starter templates for all planning files and project-level CLAUDE.md live at:
