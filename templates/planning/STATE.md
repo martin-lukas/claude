@@ -20,5 +20,5 @@
 - —
 
 ## Next Steps
-<!-- Ordered list of what to do next. -->
-1. —
+<!-- Use dash bullets, not numbered lists - reordering steps creates smaller diffs. -->
+- —
