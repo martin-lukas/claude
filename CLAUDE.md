@@ -33,10 +33,14 @@ project-level rules taking precedence where they conflict.
 
 ## Plans
 
-Never write plans to `~/.claude/plans/`. Always store plans, tasks, and session
-state in the project's `.planning/` directory (STATE.md, ROADMAP.md, etc.).
-If a task list or implementation plan needs to be captured, add it to ROADMAP.md
-or STATE.md — do not create a separate file outside the project.
+Never voluntarily write plans to `~/.claude/plans/`. Always store plans, tasks,
+and session state in the project's `.planning/` directory (STATE.md, ROADMAP.md,
+etc.). If a task list or implementation plan needs to be captured, add it to
+ROADMAP.md or STATE.md — do not create a separate file outside the project.
+
+Exception: plan mode is a harness feature that forces writes to `~/.claude/plans/`
+— that is fine and unavoidable. Those files are ephemeral approval scaffolding.
+The meaningful record of what was decided and done belongs in `.planning/` as usual.
 
 ## Templates
 
