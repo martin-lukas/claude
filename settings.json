@@ -28,10 +28,8 @@
     "command": "bash ~/.claude/status_line.sh"
   },
   "enabledPlugins": {
-    "explanatory-output-style@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "jdtls-lsp@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true
+    "jdtls-lsp@claude-plugins-official": true
   },
   "spinnerTipsEnabled": false,
   "spinnerVerbs": {
@@ -40,5 +38,5 @@
       "Thinking"
     ]
   },
-  "effortLevel": "high"
+  "effortLevel": "low"
 }
