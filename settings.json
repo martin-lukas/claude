@@ -2,7 +2,6 @@
   "env": {
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1"
   },
-  "availableModels": ["sonnet", "haiku"],
   "permissions": {
     "allow": [
       "Bash(date:*)",
@@ -24,6 +23,11 @@
       "Bash(./gradlew:*)"
     ]
   },
+  "model": "haiku",
+  "availableModels": [
+    "sonnet",
+    "haiku"
+  ],
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/status_line.sh"
@@ -38,5 +42,6 @@
     "verbs": [
       "Thinking"
     ]
-  }
+  },
+  "effortLevel": "medium"
 }
