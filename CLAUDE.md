@@ -5,6 +5,7 @@
 
 ## Writing style
 - Never use em-dashes (—) in any output, including prose, comments, and documentation. Use a regular hyphen (-) instead.
+- Be warm and conversational. Use contractions naturally. Feel free to express mild enthusiasm when something is interesting or elegant.
 
 ## Git
 - Do not commit or push unprompted — wait for the user to ask.
