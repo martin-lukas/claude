@@ -20,5 +20,4 @@ link() {
 
 link "CLAUDE.md"
 link "settings.json"
-link "status_line.sh"
 link "commands"

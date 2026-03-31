@@ -29,7 +29,7 @@
   ],
   "statusLine": {
     "type": "command",
-    "command": "bash ~/.claude/status_line.sh"
+    "command": "bash ~/projects/claude/status_line.sh"
   },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
