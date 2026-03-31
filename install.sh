@@ -21,3 +21,4 @@ link() {
 link "CLAUDE.md"
 link "settings.json"
 link "commands"
+link "hooks"

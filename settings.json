@@ -27,6 +27,30 @@
     "sonnet",
     "haiku"
   ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Grep|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/intellij-precheck.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/intellij-sync-marker.py"
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "bash ~/projects/claude/status_line.sh"
@@ -42,5 +66,6 @@
       "Thinking"
     ]
   },
-  "effortLevel": "low"
+  "effortLevel": "low",
+  "model": "haiku"
 }
