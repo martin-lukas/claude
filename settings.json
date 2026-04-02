@@ -27,38 +27,11 @@
     "sonnet",
     "haiku"
   ],
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash|Grep|Glob",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/hooks/intellij-precheck.py"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|NotebookEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/hooks/intellij-sync-marker.py"
-          }
-        ]
-      }
-    ]
-  },
   "statusLine": {
     "type": "command",
     "command": "bash ~/projects/claude/status_line.sh"
   },
-  "enabledPlugins": {
-    "claude-md-management@claude-plugins-official": true,
-    "jdtls-lsp@claude-plugins-official": true
-  },
+  "enabledPlugins": {},
   "spinnerTipsEnabled": false,
   "spinnerVerbs": {
     "mode": "replace",
@@ -67,5 +40,5 @@
     ]
   },
   "effortLevel": "low",
-  "model": "haiku"
+  "skipDangerousModePermissionPrompt": true
 }

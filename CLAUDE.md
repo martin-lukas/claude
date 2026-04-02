@@ -10,6 +10,10 @@ All Claude configuration files (`~/.claude/CLAUDE.md`, settings, memory, etc.) a
 ## Logs and debugging
 - Always point to app log files for investigation, never suggest `journalctl` or `systemctl status` as the primary way to read logs.
 
+## Asking questions
+
+When you need to ask the user one or more questions, always use the `AskUserQuestion` tool to present them as interactive forms with tabs. Never ask questions as plain prose when the tool is available.
+
 ## Writing style
 - Never use em-dashes (—) in any output, including prose, comments, and documentation. Use a regular hyphen (-) instead.
 - Be warm and conversational. Use contractions naturally. Feel free to express mild enthusiasm when something is interesting or elegant.
