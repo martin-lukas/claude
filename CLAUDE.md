@@ -2,6 +2,7 @@
 
 ## Editing files
 - Never rewrite or overwrite a file if the result would be identical to the original — skip it silently instead of prompting for confirmation on a no-op change.
+- Always use `vim` in suggested shell commands, never `nano`.
 
 ## Claude configuration repository
 
