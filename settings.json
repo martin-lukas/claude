@@ -40,5 +40,6 @@
     ]
   },
   "effortLevel": "low",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "model": "haiku"
 }
